@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/bytedance/gopkg/cloud/metainfo"
 	"github.com/cloudwego/kitex/client"
@@ -15,11 +16,12 @@ import (
 	"github.com/tankpanv/demo/store/kitex_gen/federation/recommend/strategy/strategyservice"
 	"github.com/tankpanv/demo/store/kitex_gen/wealth/stock/packer/storepackerservice"
 )
-var PassHeaderKeys  =[]string{
-    "x-env",
-    "x-env-type",
-     
+
+var PassHeaderKeys = []string{
+	"x-env",
+	"x-env-type",
 }
+
 const (
 	Namespace = "default"
 
@@ -45,10 +47,12 @@ func PassHeaderFunc(ctx context.Context) map[string]string {
 
 	return r
 }
-var Recommomend  strategyservice.Client
-var Packer  storepackerservice.Client
-func init(){
-    var err error
+
+var Recommomend strategyservice.Client
+var Packer storepackerservice.Client
+
+func init() {
+	var err error
 	err = xds.Init()
 	if err != nil {
 		panic(err)
@@ -57,7 +61,7 @@ func init(){
 
 	Recommomend, err = strategyservice.NewClient(
 		ServiceName("federation-demo-recommend"),
-        client.WithXDSSuite(xds2.ClientSuite{
+		client.WithXDSSuite(xds2.ClientSuite{
 			RouterMiddleware: xdssuite.NewXDSRouterMiddleware(
 				xdssuite.WithRouterMetaExtractor(PassHeaderFunc),
 			),
@@ -68,6 +72,7 @@ func init(){
 		// Please keep the same as provider.WithServiceName
 		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: "store"}),
 		// client.WithRPCTimeout(1*time.Second),
+		client.WithRPCTimeout(200*time.Millisecond),
 	)
 	if err != nil {
 		panic(fmt.Sprintf("init CaifustoreClient fail %v", err))
@@ -75,7 +80,7 @@ func init(){
 
 	Packer, err = storepackerservice.NewClient(
 		ServiceName("federation-demo-packer"),
- client.WithXDSSuite(xds2.ClientSuite{
+		client.WithXDSSuite(xds2.ClientSuite{
 			RouterMiddleware: xdssuite.NewXDSRouterMiddleware(
 				xdssuite.WithRouterMetaExtractor(PassHeaderFunc),
 			),
@@ -85,18 +90,15 @@ func init(){
 		client.WithSuite(tracing.NewClientSuite()),
 		// Please keep the same as provider.WithServiceName
 		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{ServiceName: "store"}),
-		// client.WithRPCTimeout(1*time.Second),
+		
 	)
 
 	if err != nil {
 		panic(fmt.Sprintf("init CaifustoreClient fail %v", err))
 	}
 
-
-
 	if err != nil {
 		panic(fmt.Sprintf("init CaifustoreClient fail %v", err))
 	}
-
 
 }

@@ -24,7 +24,7 @@ if [[ $env != "prod" && $env != "ppe" && $env != "test" ]];then
     echo "bash image.sh ppe debug"
     exit 1
 fi
-last_version=5
+last_version=8
 
 service_name=${psm//\./-}
 echo $service_name

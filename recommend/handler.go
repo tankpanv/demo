@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"time"
 
 	"github.com/cloudwego/kitex/pkg/klog"
 	strategy "github.com/tankpanv/demo/recommend/kitex_gen/federation/recommend/strategy"
@@ -19,5 +20,6 @@ func (s *StrategyServiceImpl) Recommend(ctx context.Context, req *strategy.Strat
 	keyword := "212"
 	d.Keyword = &keyword
 	resp.Data = append(resp.Data, d)
+	time.Sleep(2* time.Second)
 	return
 }
