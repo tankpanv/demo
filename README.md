@@ -1,4 +1,4 @@
-环境：
+```环境：
 k8s 1.26.6
 store、recommend、packer 3个部署在k8s 的kitex 服务。deployment、destinationRule、virtualService 的部署文件在deployments 文件下
 使用 xDS 协议进而以 Proxyless 模式运行 
@@ -18,4 +18,6 @@ err="no matched route for service federation-demo-recommend.default.svc.cluster.
 1、在store/testApi 执行目录下
 step 1 执行 go main.go发起一个store请求。服务store请求完recommend 接着请求packer服务。此次请求均是正常的
 
-复现demo链接：
+复现demo链接：https://github.com/tankpanv/demo
+
+```
