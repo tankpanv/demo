@@ -16,8 +16,9 @@ err="no matched route for service federation-demo-recommend.default.svc.cluster.
 4、等待几分钟后，再重新发起一次请求，会恢复到第一步。间隔时间大概几分钟
 复现路径：
 1、在store/testApi 执行目录下
-step 1 执行 go main.go发起一个store请求。服务store请求完recommend 接着请求packer服务。此次请求均是正常的
-
+step 1 执行 go main.go发起一个store请求。在log/app/run.log 可以看到 服务store请求完recommend 接着请求packer服务也是正常。
+step 2 执行go main.go第二次请求，会看到log下报错：
+no matched route for service federation-demo-recommend.default.svc.cluster.local:8888, err=get route failed: [XDS] manager, fetch RouteConfig resource[federation-demo-recommend.default.svc.cluster.local:8888] timeout
 复现demo链接：https://github.com/tankpanv/demo
 
 ```
