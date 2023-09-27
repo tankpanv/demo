@@ -1,0 +1,29 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: federation-demo-recommend
+spec:
+  hosts:
+    -  federation-demo-recommend
+  http:
+    - match:
+        - headers:
+            x-env:
+              exact: "ppe"
+      route:
+        - destination:
+            host:  federation-demo-recommend
+            subset: ppe
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: unavailable,gateway-error,connect-failure,refused-stream,reset,retriable-status-codes
+    - route:
+        - destination:
+            host:  federation-demo-recommend
+            subset: prod
+          weight: 100
+      retries:
+        attempts: 3
+        perTryTimeout: 2s
+        retryOn: unavailable,gateway-error,connect-failure,refused-stream,reset,retriable-status-codes

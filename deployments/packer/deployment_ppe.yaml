@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: federation-demo-packer-ppe
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: federation-demo-packer
+      env: ppe
+      version: ppe
+  template:
+    metadata:
+      labels:
+        app: federation-demo-packer
+        env: ppe 
+        version: ppe
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+            #nodeSelector:
+            #  federation-demo-packer: "true"
+      containers:
+        - name: node-service
+          image: core.harbor.domain/demo/federation-demo-packer:ppe-1.1.2
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            tcpSocket:
+              port: 8888
+          ports:
+            - name: mainport
+              containerPort: 8888
+            - name: dlv
+              containerPort: 2345
+          env:
+          # specify the service name for this instance
+          # specify to "benchmark-client" if want to deploy benchmark
+            - name: MY_SERVICE_NAME
+              value: federation-demo-packer
+            - name: IMAGE
+              value: core.harbor.domain/demo/federation-demo-packer:ppe-1.1.1
+            - name: ENV_TYPE 
+              value: ppe
+            # for test
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: INSTANCE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP

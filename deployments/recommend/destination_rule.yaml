@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: federation-demo-recommend
+  namespace: default
+spec:
+  host: federation-demo-recommend
+  subsets:
+    - name: prod
+      labels:
+        version: prod
+    - name: ppe
+      labels:
+        version: ppe
+    - name: test
+      labels:
+        version: test
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: federation-demo-recommend
+  namespace: default
+spec:
+  ports:
+    - name: port
+      port: 8888
+      targetPort: mainport
+    - name: dlv
+      port: 2345
+      targetPort: dlv
+  type: NodePort
+  selector:
+    app: federation-demo-recommend
+    #clusterIP: None

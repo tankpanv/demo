@@ -1,0 +1,1 @@
+kitex -service wealth-stock-packer ../idls/stock/wealth_stock_packer.thrift
